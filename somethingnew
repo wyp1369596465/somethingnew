@@ -1,0 +1,6 @@
+#include<stdio.h>
+int main()
+{
+int m,i;
+for(m=100;m<=200;m++)
+    
