@@ -1,0 +1,322 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+void start();
+void input();
+void change();
+void dele();
+void search();
+void READ();
+void save();
+void sort();
+void output();
+struct GOODS
+{
+char goods_id[100];
+char goods_name[100];
+char goods_price[100];
+char goods_type[100];
+int  goods_amount;
+} goods[100],G[100];
+int u;
+char flag[4];
+FILE *fp;
+FILE *fp1;
+int n[10];
+void main()
+{
+	
+    while(1)
+	{
+     start();
+	}
+	
+}
+void start()
+{
+int ch;
+printf("\n\t\t\t\t超市商品信息管理系统\n");
+printf("\t\t\t****************************\n");
+printf("\t\t\t1.商品的录入\n");
+printf("\t\t\t2.修改某个商品的信息\n");
+printf("\t\t\t3.删除某个商品的信息\n");
+printf("\t\t\t4.查找某个商品的信息\n");
+printf("\t\t\t5.统计商品数量\n");
+printf("\t\t\t6.退出系统\n");
+printf("\t\t\t7.浏览商品的信息\n");
+printf("\t\t\t****************************\n");
+   printf("\n\n输入你的选择（1-7）:");
+   scanf("%d",&ch);
+switch(ch)
+{
+        case 1:input();
+                break;
+        case 2:change();
+                break;
+        case 3:dele();
+                break;
+        case 4:search();
+                break;
+		case 5:sort();
+			    break;
+		case 7:output();
+			    break;
+	    default :{printf("\n退出系统并按任意键退出系统");
+         exit(0);}
+}
+
+}
+void input()
+{
+	
+	do
+	{  
+	   	int i=0;
+	fp=fopen("C:\\Users\\402\\Desktop\\fille.txt","r");
+	while(!feof(fp)) 
+	{ //从文件中读取数据到结构体
+	    fscanf(fp,"%s %s %s %d %s",goods[i].goods_id,goods[i].goods_name,goods[i].goods_price,&goods[i].goods_amount,goods[i].goods_type);
+        u=i;
+		i++;
+		
+	}
+	fclose(fp);
+	   printf("请输入你的商品信息:\n");
+       printf("商品编号:");
+       scanf("%s",goods[u].goods_id);
+	   printf("商品名字:");
+       scanf("%s",goods[u].goods_name);
+       printf("商品价格:");
+       scanf("%s",goods[u].goods_price);
+       printf("商品数目:");
+       scanf("%d",&goods[u].goods_amount);
+	   printf("商品类型:");
+	   scanf("%s",goods[u].goods_type);
+       save();
+       printf("信息导入成功\n");
+	   printf("是否继续输入商品信息\nyes or no");
+	   scanf("%s",flag);
+	}  while(strcmp(flag,"yes")==0);
+	   fclose(fp);
+	   
+}
+void change()
+{
+	char a[20];
+	int t,m=0;
+		printf("\n输入商品的编号:");
+		scanf("%s",a);
+		int i=0;
+	fp=fopen("C:\\Users\\402\\Desktop\\fille.txt","r");
+	while(!feof(fp)) 
+	{ //从文件中读取数据到结构体
+	    fscanf(fp,"%s %s %s %d %s",goods[i].goods_id,goods[i].goods_name,goods[i].goods_price,&goods[i].goods_amount,goods[i].goods_type);
+        u=i;
+		i++;
+	}
+	fclose(fp);
+		for(i=0;i<u;i++)
+		{if(strcmp(goods[i].goods_id,a)==0)
+		{ 
+			m++;t=i;//t为下面指定物品作地址
+		}
+		}
+        if(m==0)printf("\n对不起，你输入的商品不存在。请检查！！！\n");
+        if(m==1)
+		{
+
+            printf("\n请重新输入商品信息\n");
+					printf("商品编号:");
+                    scanf("%s",goods[t].goods_id);
+	                printf("商品名字:");
+                    scanf("%s",goods[t].goods_name);
+                    printf("商品价格:");
+                    scanf("%s",goods[t].goods_price);
+                    printf("商品数目:");
+                    scanf("%d",&goods[t].goods_amount);
+	                printf("商品类型:");
+	                scanf("%s",goods[t].goods_type);
+					save();
+		}
+        else
+		    printf("\n商品的编号错误，不能重复编号。请选择删除商品！！！\n"); 
+			printf("\n*********请继续选择**********\n");
+	   
+	
+}
+void dele()
+{
+
+    int t,m=0;
+    char c[10];
+    printf("\n输入商品的编号来删除商品:");
+    scanf("%s",c);
+    int i=0;
+	fp=fopen("C:\\Users\\402\\Desktop\\fille.txt","r");
+	while(!feof(fp)) 
+	{ //从文件中读取数据到结构体
+	    fscanf(fp,"%s %s %s %d %s",goods[i].goods_id,goods[i].goods_name,goods[i].goods_price,&goods[i].goods_amount,goods[i].goods_type);
+        u=i;
+		i++;
+	}
+	fclose(fp);
+	for(i=0;i<u;i++)
+	{  
+		if(strcmp(goods[i].goods_id,c)==0)
+		{   t=i;
+		    m=1;
+		    for(i=t;i<u;i++)
+			{
+			    goods[i]=goods[i+1];//覆盖待处理行
+			}
+		fp1=fopen("C:\\Users\\402\\Desktop\\fill.txt","w");
+        for(i=0;i<u-1;i++)//写入所有处理后的数据。
+		{
+			fprintf(fp1,"%s %s %s %d %s\n",goods[i].goods_id,goods[i].goods_name,goods[i].goods_price,goods[i].goods_amount,goods[i].goods_type);	
+		}
+		fclose(fp1);//关闭文件。
+	        if(m==1)
+			{	
+				printf("********删除成功*********\n:");
+	            remove("fille.txt");
+                rename("fill.txt","fille.txt");}
+	        if(m==0)
+			{
+		        printf("删除失败");
+			}
+		}
+    }
+	
+		
+}
+void search()
+{
+    int i,t=0,b,j,number,m=0;
+	READ();
+    fclose(fp);
+	char a[20],num[20];
+          printf("\n1.按商品的编号来查找选1:");
+          printf("\n2.按商品的名字来查找选2:");
+          printf("\n3.按商品的价格来查找选3:\n");
+    scanf("%d",&b);
+    switch(b)
+	{
+	case 1:
+		 printf("\n请输入商品的编号:");
+		 scanf("%s",a);
+    for(i=0;i<u;i++)
+    {if(strcmp(goods[i].goods_id,a)==0)
+    {
+		m++;num[t++]=i;
+	}
+    }
+    if(m==0)printf("对不起，你输入的商品不在其范围里。请检查！！！\n");
+    else  
+	{   for(j=0;j<t;j++)
+		number=num[j];
+        printf("************已查到商品信息****************\n");
+        printf("商品编号:%s商品名字:%s商品价格:%s商品数目:%d商品类型:%s\n\n",goods[number].goods_id,goods[number].goods_name,goods[number].goods_price,goods[number].goods_amount,goods[number].goods_type);
+	}break;
+	case 2:
+		 printf("\n请输入商品的名字:");
+         scanf("%s",a);
+    for(i=0;i<u;i++)
+    {if(strcmp(goods[i].goods_name,a)==0)
+	{
+		m++;num[t++]=i;
+	}
+	}
+    if(m==0)printf("对不起，你输入的商品不在其范围里。请检查！！！\n");
+    else  
+	{   for(j=0;j<t;j++)
+		number=num[j];
+        printf("************已查到商品信息****************\n");
+        printf("商品编号:%s商品名字:%s商品价格:%s商品数目:%d商品类型:%s\n\n",goods[number].goods_id,goods[number].goods_name,goods[number].goods_price,goods[number].goods_amount,goods[number].goods_type);
+	}break;
+	case 3:
+		 printf("\n请输入商品的价格:");
+         scanf("%s",a);
+         for(i=0;i<u;i++)
+		 {if(strcmp(goods[i].goods_price,a)==0)
+		 {
+			 m++;num[t++]=i;
+		 }
+		 }
+    if(m==0)printf("对不起，你输入的商品不在其范围里。请检查！！！\n");
+    else  
+	{   for(j=0;j<t;j++)
+		number=num[j];
+        printf("************已查到商品信息****************\n");
+        printf("商品编号:%s商品名字:%s商品价格:%s商品数目:%d商品类型:%s\n\n",goods[number].goods_id,goods[number].goods_name,goods[number].goods_price,goods[number].goods_amount,goods[number].goods_type);
+	}break;
+	}
+	
+}
+void READ()//各函数内用READ函数可行，但是把READ函数代码写进去就不能运行。
+{
+ 
+	int i=0;
+	fp=fopen("C:\\Users\\402\\Desktop\\fille.txt","r");
+	while(!feof(fp)) 
+	{ //从文件中读取数据到结构体
+	    fscanf(fp,"%s %s %s %d %s",goods[i].goods_id,goods[i].goods_name,goods[i].goods_price,&goods[i].goods_amount,goods[i].goods_type);
+        u=i;
+		i++;
+
+
+	}
+	
+}
+void save()
+{
+	int i;
+	fp1=fopen("C:\\Users\\402\\Desktop\\fill.txt","w");
+    for(i=0;i<u+1;i++)
+	{
+		fprintf(fp1,"%s %s %s %d %s\n",goods[i].goods_id,goods[i].goods_name,goods[i].goods_price,goods[i].goods_amount,goods[i].goods_type);
+
+	}
+	fclose(fp1);
+    remove("fille.txt");
+rename("fill.txt","fille.txt");	
+}
+void sort()
+{
+	int i,sum=0;
+	char a[100],b[10];
+	fp=fopen("C:\\Users\\402\\Desktop\\fille.txt","r");
+    READ();
+	fclose(fp);
+    printf("\n1.按商品的类型统计选1:");
+    printf("\n2.按商品的编号统计选2:");
+	scanf("%s",b);
+	if(strcmp(b,"1")==0)  
+	{	printf("请输入类型:\n");
+	    scanf("%s",a);
+	    for(i=0;i<u;i++)
+		{ if(strcmp(goods[i].goods_type,a)==0)
+		sum=sum+goods[i].goods_amount;}
+	    printf("%s类型共有:%d",a,sum);
+	    printf("\n");
+	}
+	else if(strcmp(b,"2")==0)
+	{ printf("请输入商品编号:\n");
+	         scanf("%s",a);
+	         for(i=0;i<u;i++)
+			 { if(strcmp(goods[i].goods_id,a)==0)
+			 sum=goods[i].goods_amount;}
+	printf("该商品共有:%d",sum);
+	printf("\n");     
+	}
+	
+}
+
+void output()
+{
+	int i=0;
+	READ();
+	for(i=0;i<u;i++)
+	    printf("\t\t\t%s %s %s %d %s\n",goods[i].goods_id,goods[i].goods_name,goods[i].goods_price,goods[i].goods_amount,goods[i].goods_type);  
+	fclose(fp);
+}
+
